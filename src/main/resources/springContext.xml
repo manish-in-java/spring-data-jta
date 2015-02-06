@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:transaction="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+  <context:annotation-config/>
+  <context:component-scan base-package="org.example.data.directory"/>
+
+  <bean class="org.h2.jdbcx.JdbcDataSource" id="catalogDataStore" lazy-init="true">
+    <property name="password" value=""/>
+    <property name="url" value="jdbc:h2:mem:catalog"/>
+    <property name="user" value="sa"/>
+  </bean>
+
+  <bean class="com.atomikos.jdbc.AtomikosDataSourceBean" id="catalogDataSource" init-method="init" destroy-method="close">
+    <property name="uniqueResourceName" value="catalogDS"/>
+    <property name="xaDataSource" ref="catalogDataStore"/>
+    <property name="poolSize" value="3"/>
+  </bean>
+
+  <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="catalogEntityManagerFactory">
+    <property name="dataSource" ref="catalogDataSource"/>
+    <property name="jpaProperties">
+      <props>
+        <prop key="hibernate.format_sql">true"</prop>
+        <prop key="hibernate.transaction.jta.platform">com.atomikos.icatch.jta.hibernate4.AtomikosPlatform</prop>
+        <prop key="hibernate.use_sql_comments">true</prop>
+        <prop key="javax.persistence.transactionType">jta</prop>
+      </props>
+    </property>
+    <property name="jpaVendorAdapter">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
+        <property name="generateDdl" value="true"/>
+        <property name="showSql" value="true"/>
+      </bean>
+    </property>
+    <property name="packagesToScan" value="org.example.domain.catalog"/>
+  </bean>
+
+  <bean class="org.h2.jdbcx.JdbcDataSource" id="directoryDataStore" lazy-init="true">
+    <property name="password" value=""/>
+    <property name="url" value="jdbc:h2:mem:directory"/>
+    <property name="user" value="sa"/>
+  </bean>
+
+  <bean class="com.atomikos.jdbc.AtomikosDataSourceBean" id="directoryDataSource" init-method="init" destroy-method="close">
+    <property name="uniqueResourceName" value="directoryDS"/>
+    <property name="xaDataSource" ref="directoryDataStore"/>
+    <property name="poolSize" value="3"/>
+  </bean>
+
+  <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="directoryEntityManagerFactory">
+    <property name="dataSource" ref="directoryDataSource"/>
+    <property name="jpaProperties">
+      <props>
+        <prop key="hibernate.format_sql">true"</prop>
+        <prop key="hibernate.transaction.jta.platform">com.atomikos.icatch.jta.hibernate4.AtomikosPlatform</prop>
+        <prop key="hibernate.use_sql_comments">true</prop>
+        <prop key="javax.persistence.transactionType">jta</prop>
+      </props>
+    </property>
+    <property name="jpaVendorAdapter">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
+        <property name="generateDdl" value="true"/>
+        <property name="showSql" value="true"/>
+      </bean>
+    </property>
+    <property name="packagesToScan" value="org.example.domain.directory"/>
+  </bean>
+
+  <bean class="org.springframework.transaction.jta.JtaTransactionManager" id="transactionManager">
+    <property name="transactionManager">
+      <bean class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+        <property name="forceShutdown" value="false"/>
+      </bean>
+    </property>
+    <property name="userTransaction">
+      <bean class="com.atomikos.icatch.jta.J2eeUserTransaction">
+        <property name="transactionTimeout" value="300"/>
+      </bean>
+    </property>
+    <property name="allowCustomIsolationLevels" value="true"/>
+  </bean>
+
+  <jpa:repositories base-package="org.example.data.catalog" entity-manager-factory-ref="catalogEntityManagerFactory"/>
+  <jpa:repositories base-package="org.example.data.directory" entity-manager-factory-ref="directoryEntityManagerFactory"/>
+
+  <transaction:annotation-driven transaction-manager="transactionManager"/>
+</beans>
