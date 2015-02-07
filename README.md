@@ -19,7 +19,7 @@ The XA-compliant data source for the same database is provided by the class
 JDBC driver class for the MySQL database, `com.mysql.jdbc.jdbc2.optional.MysqlXADataSource`
 provides the XA-compliant data source.
 1. Wrap the XA data source in an `AtomikosDataSourceBean`.  This class is responsible
-for ensuring that the wrapped XA data source participates in JRA transactions.
+for ensuring that the wrapped XA data source participates in JTA transactions.
 1. Point the `EntityManagerFactory` instance to the `AtomikosDataSourceBean` instance.
 This makes sure that the database connections participate in JTA transactions.
 1. Declare an XA transaction manager and an XA user transaction.
