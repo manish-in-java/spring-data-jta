@@ -1,17 +1,18 @@
 package org.example.domain.catalog;
 
-import org.example.domain.Entity;
+import org.example.domain.Model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
  * Represents a product.
  */
-@javax.persistence.Entity
+@Entity
 @Table(name = "product")
-public class Product extends Entity
+public class Product extends Model
 {
   @Column(name = "name")
   @NotNull

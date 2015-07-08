@@ -1,26 +1,27 @@
 package org.example.domain.directory;
 
-import org.example.domain.Entity;
+import org.example.domain.Model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Represents a user.
+ * Represents a person.
  */
-@javax.persistence.Entity
-@Table(name = "user")
-public class User extends Entity
+@Entity
+@Table(name = "person")
+public class Person extends Model
 {
   @Column(name = "name")
   @NotNull
   private String name;
 
   /**
-   * Gets the username.
+   * Gets the person's ame.
    *
-   * @return The username.
+   * @return The person's name.
    */
   public String getName()
   {
@@ -28,9 +29,9 @@ public class User extends Entity
   }
 
   /**
-   * Sets the username.
+   * Sets the person's name.
    *
-   * @param name The username.
+   * @param name The person's name.
    */
   public void setName(final String name)
   {

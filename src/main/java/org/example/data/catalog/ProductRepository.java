@@ -1,12 +1,12 @@
 package org.example.data.catalog;
 
-import org.example.data.EntityRepository;
+import org.example.data.ModelRepository;
 import org.example.domain.catalog.Product;
 
 /**
  * Contract for data access operations on an {@link Product}.
  */
-public interface ProductRepository extends EntityRepository<Product>
+public interface ProductRepository extends ModelRepository<Product>
 {
   /**
    * Finds a product by its name.
