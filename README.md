@@ -1,4 +1,4 @@
-# Overview
+# Overview [![Build status](https://drone.io/github.com/manish-in-java/spring-data-jta/status.png)](https://drone.io/github.com/manish-in-java/spring-data-jta/latest) [![Code coverage](https://coveralls.io/repos/manish-in-java/spring-data-jta/badge.svg?branch=master&service=github)](https://coveralls.io/github/manish-in-java/spring-data-jta?branch=master)
 This sample application demonstrates the use of an external [JTA](http://en.wikipedia.org/wiki/Java_Transaction_API)
 transaction manager in a Spring Data JPA application.  It uses two database schemas,
 saving data to and reading from these schemas, as needed to demonstrate and test the
