@@ -26,6 +26,16 @@ This makes sure that the database connections participate in JTA transactions.
 1. Wrap the XA transaction manager in a Spring `JtaTransactionManager`.
 1. Use the Spring `JtaTransactionManager`.
 
+In order to see everything in action, install JDK7+ and Maven 3.1+ and run
+`mvn clean test` to run the tests included with the app.
+
+# JTA providers
+Support for Bitronix is also included as a [Spring Profile](http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/new-in-3.1.html).
+Run the tests as `mvn clean test -D"spring.profiles.active=bitronix"` to run
+the tests using Bitronix instead of Atomikos.  However, be warned that the
+tests will take a very long time to complete owing to the fact that this part
+of the sample uses two live PostgreSQL instances running on Amazon AWS.
+
 # License
 This sample application and its associated source code in its entirety is being made
 available under the following licensing terms.
