@@ -109,6 +109,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.jbossts</groupId>
+      <artifactId>jbossjta</artifactId>
+      <version>${jbossts.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
@@ -155,6 +161,7 @@
     <h2.version>1.4.192</h2.version>
     <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
     <hibernate.version>5.2.2.Final</hibernate.version>
+    <jbossts.version>4.16.6.Final</jbossts.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.7</logback.version>
     <postgresql.version>9.4-1201-jdbc41</postgresql.version>

@@ -7,27 +7,27 @@ import org.example.domain.directory.Person;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration test for JTA transactions
  */
 @ContextConfiguration(locations = "classpath:springContext.xml")
+@Rollback
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@TransactionConfiguration(defaultRollback = true)
 public class Test
 {
   private static final String PERSON_NAME  = "yoda";
   private static final String PRODUCT_NAME = "Light Sabre";
 
   @Autowired
-  PersonRepository  personRepository;
+  private PersonRepository  personRepository;
   @Autowired
-  ProductRepository productRepository;
+  private ProductRepository productRepository;
 
   /**
    * Tests a JTA transaction.
