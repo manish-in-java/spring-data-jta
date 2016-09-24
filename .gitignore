@@ -8,6 +8,7 @@ target/
 *~
 *.db
 *.iml
+*.lck
 *.log
 *.tlog
 *.tmp
