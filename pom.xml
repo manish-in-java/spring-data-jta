@@ -42,6 +42,17 @@
         <version>3.1.0</version>
       </plugin>
     </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
@@ -153,10 +164,21 @@
   </dependencies>
 
   <properties>
+    <database.driver>org.h2.jdbcx.JdbcDataSource</database.driver>
+    <database.generate>true</database.generate>
+    <database.sql.comment>true</database.sql.comment>
+    <database.sql.format>true</database.sql.format>
+    <database.sql.quotes>false</database.sql.quotes>
+    <database.sql.sequence>false</database.sql.sequence>
+    <database.sql.show>false</database.sql.show>
+    <database.url.catalog>jdbc:h2:mem:catalog;DB_CLOSE_DELAY=-1</database.url.catalog>
+    <database.url.directory>jdbc:h2:mem:directory;DB_CLOSE_DELAY=-1</database.url.directory>
+    <database.user>sa</database.user>
+
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <atomikos.version>4.0.0M4</atomikos.version>
+    <atomikos.version>4.0.4</atomikos.version>
     <btm.version>2.1.4</btm.version>
     <h2.version>1.4.192</h2.version>
     <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
