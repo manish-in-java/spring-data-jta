@@ -9,77 +9,70 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
-  <beans profile="atomikos,default">
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="atomikosCatalogEntityManagerFactory">
+  <beans>
+    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="catalogEntityManagerFactory">
       <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">com.atomikos.icatch.jta.hibernate4.AtomikosPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
+        <map>
+          <entry key="hibernate.format_sql" value="${database.sql.format}"/>
+          <entry key="hibernate.globally_quoted_identifiers" value="${database.sql.quotes}"/>
+          <entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
+          <entry key="hibernate.id.new_generator_mappings" value="${database.sql.sequence}"/>
+          <entry key="hibernate.transaction.jta.platform" value-ref="jtaPlatform"/>
+          <entry key="hibernate.use_sql_comments" value="${database.sql.comment}"/>
+        </map>
       </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
+      <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
       <property name="jtaDataSource">
-        <bean class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
-          <property name="borrowConnectionTimeout" value="3000"/>
-          <property name="defaultIsolationLevel" value="4"/>
-          <property name="poolSize" value="3"/>
-          <property name="uniqueResourceName" value="catalogDS"/>
-          <property name="xaDataSource">
-            <bean class="${database.driver}" lazy-init="true">
-              <property name="password" value=""/>
-              <property name="url" value="${database.url.catalog}"/>
-              <property name="user" value="${database.user}"/>
-            </bean>
-          </property>
+        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+          <property name="driverClassName" value="${database.driver}"/>
+          <property name="password" value=""/>
+          <property name="url" value="${database.url.catalog}"/>
+          <property name="username" value="${database.user}"/>
         </bean>
       </property>
       <property name="packagesToScan" value="org.example.domain.catalog"/>
     </bean>
 
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="atomikosDirectoryEntityManagerFactory">
+    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="directoryEntityManagerFactory">
       <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">com.atomikos.icatch.jta.hibernate4.AtomikosPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
+        <map>
+          <entry key="hibernate.format_sql" value="${database.sql.format}"/>
+          <entry key="hibernate.globally_quoted_identifiers" value="${database.sql.quotes}"/>
+          <entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
+          <entry key="hibernate.id.new_generator_mappings" value="${database.sql.sequence}"/>
+          <entry key="hibernate.transaction.jta.platform" value-ref="jtaPlatform"/>
+          <entry key="hibernate.use_sql_comments" value="${database.sql.comment}"/>
+        </map>
       </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
+      <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
       <property name="jtaDataSource">
-        <bean class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
-          <property name="borrowConnectionTimeout" value="3000"/>
-          <property name="defaultIsolationLevel" value="4"/>
-          <property name="poolSize" value="3"/>
-          <property name="uniqueResourceName" value="directoryDS"/>
-          <property name="xaDataSource">
-            <bean class="${database.driver}" lazy-init="true">
-              <property name="password" value=""/>
-              <property name="url" value="${database.url.directory}"/>
-              <property name="user" value="${database.user}"/>
-            </bean>
-          </property>
+        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+          <property name="driverClassName" value="${database.driver}"/>
+          <property name="password" value=""/>
+          <property name="url" value="${database.url.directory}"/>
+          <property name="username" value="${database.user}"/>
         </bean>
       </property>
       <property name="packagesToScan" value="org.example.domain.directory"/>
+    </bean>
+
+    <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" id="jpaVendorAdapter">
+      <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="generateDdl" value="${database.generate}"/>
+      <property name="showSql" value="${database.sql.show}"/>
+    </bean>
+
+    <context:annotation-config/>
+
+    <jpa:repositories base-package="org.example.data.catalog" entity-manager-factory-ref="catalogEntityManagerFactory"/>
+    <jpa:repositories base-package="org.example.data.directory" entity-manager-factory-ref="directoryEntityManagerFactory"/>
+
+    <transaction:annotation-driven/>
+  </beans>
+
+  <beans profile="atomikos,default">
+    <bean class="java.lang.String" id="jtaPlatform">
+      <constructor-arg value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
     </bean>
 
     <bean class="org.springframework.transaction.jta.JtaTransactionManager" id="transactionManager">
@@ -95,88 +88,11 @@
       </property>
       <property name="allowCustomIsolationLevels" value="true"/>
     </bean>
-
-    <context:annotation-config/>
-
-    <jpa:repositories base-package="org.example.data.catalog" entity-manager-factory-ref="atomikosCatalogEntityManagerFactory"/>
-    <jpa:repositories base-package="org.example.data.directory" entity-manager-factory-ref="atomikosDirectoryEntityManagerFactory"/>
-
-    <transaction:annotation-driven/>
   </beans>
 
   <beans profile="bitronix">
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="bitronixCatalogEntityManagerFactory">
-      <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
-      </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
-      <property name="jtaDataSource">
-        <bean class="bitronix.tm.resource.jdbc.PoolingDataSource" destroy-method="close" init-method="init">
-          <property name="allowLocalTransactions" value="true"/>
-          <property name="className" value="${database.driver}"/>
-          <property name="driverProperties">
-            <props>
-              <prop key="password"></prop>
-              <prop key="url">${database.url.catalog}</prop>
-              <prop key="user">${database.user}</prop>
-            </props>
-          </property>
-          <property name="maxPoolSize" value="5"/>
-          <property name="minPoolSize" value="1"/>
-          <property name="uniqueName" value="catalogDS"/>
-        </bean>
-      </property>
-      <property name="packagesToScan" value="org.example.domain.catalog"/>
-    </bean>
-
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="bitronixDirectoryEntityManagerFactory">
-      <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
-      </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
-      <property name="jtaDataSource">
-        <bean class="bitronix.tm.resource.jdbc.PoolingDataSource" destroy-method="close" init-method="init">
-          <property name="allowLocalTransactions" value="true"/>
-          <property name="className" value="${database.driver}"/>
-          <property name="driverProperties">
-            <props>
-              <prop key="password"></prop>
-              <prop key="url">${database.url.directory}</prop>
-              <prop key="user">${database.user}</prop>
-            </props>
-          </property>
-          <property name="maxPoolSize" value="5"/>
-          <property name="minPoolSize" value="1"/>
-          <property name="uniqueName" value="directoryDS"/>
-        </bean>
-      </property>
-      <property name="packagesToScan" value="org.example.domain.directory"/>
+    <bean class="java.lang.String" id="jtaPlatform">
+      <constructor-arg value="org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform"/>
     </bean>
 
     <bean class="bitronix.tm.TransactionManagerServices" factory-method="getConfiguration" id="bitronixConfiguration"/>
@@ -191,72 +107,11 @@
       <property name="transactionManager" ref="bitronixTransactionManager"/>
       <property name="userTransaction" ref="bitronixTransactionManager"/>
     </bean>
-
-    <context:annotation-config/>
-
-    <jpa:repositories base-package="org.example.data.catalog" entity-manager-factory-ref="bitronixCatalogEntityManagerFactory"/>
-    <jpa:repositories base-package="org.example.data.directory" entity-manager-factory-ref="bitronixDirectoryEntityManagerFactory"/>
-
-    <transaction:annotation-driven/>
   </beans>
 
   <beans profile="jbossts">
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="jbosstsCatalogEntityManagerFactory">
-      <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
-      </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
-      <property name="jtaDataSource">
-        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-          <property name="driverClassName" value="${database.driver}"/>
-          <property name="password" value=""/>
-          <property name="url" value="${database.url.catalog}"/>
-          <property name="username" value="${database.user}"/>
-        </bean>
-      </property>
-      <property name="packagesToScan" value="org.example.domain.catalog"/>
-    </bean>
-
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="jbosstsDirectoryEntityManagerFactory">
-      <property name="jpaProperties">
-        <props>
-          <prop key="hibernate.format_sql">${database.sql.format}</prop>
-          <prop key="hibernate.globally_quoted_identifiers">${database.sql.quotes}</prop>
-          <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-          <prop key="hibernate.id.new_generator_mappings">${database.sql.sequence}</prop>
-          <prop key="hibernate.transaction.jta.platform">org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform</prop>
-          <prop key="hibernate.use_sql_comments">${database.sql.comment}</prop>
-        </props>
-      </property>
-      <property name="jpaVendorAdapter">
-        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-          <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="generateDdl" value="${database.generate}"/>
-          <property name="showSql" value="${database.sql.show}"/>
-        </bean>
-      </property>
-      <property name="jtaDataSource">
-        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-          <property name="driverClassName" value="${database.driver}"/>
-          <property name="password" value=""/>
-          <property name="url" value="${database.url.directory}"/>
-          <property name="username" value="${database.user}"/>
-        </bean>
-      </property>
-      <property name="packagesToScan" value="org.example.domain.directory"/>
+    <bean class="java.lang.String" id="jtaPlatform">
+      <constructor-arg value="org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform"/>
     </bean>
 
     <bean class="org.springframework.transaction.jta.JtaTransactionManager" id="transactionManager">
@@ -267,12 +122,5 @@
         <bean class="com.arjuna.ats.jta.UserTransaction" factory-method="userTransaction"/>
       </property>
     </bean>
-
-    <context:annotation-config/>
-
-    <jpa:repositories base-package="org.example.data.catalog" entity-manager-factory-ref="jbosstsCatalogEntityManagerFactory"/>
-    <jpa:repositories base-package="org.example.data.directory" entity-manager-factory-ref="jbosstsDirectoryEntityManagerFactory"/>
-
-    <transaction:annotation-driven/>
   </beans>
 </beans>

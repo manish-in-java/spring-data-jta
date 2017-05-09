@@ -13,16 +13,11 @@ The XA-compliant data source for the same database is provided by the class
 `org.h2.jdbcx.JdbcDataSource`.  Similarly, where `com.mysql.jdbc.Driver` is the regular
 JDBC driver class for the MySQL database, `com.mysql.jdbc.jdbc2.optional.MysqlXADataSource`
 provides the XA-compliant data source.
-1. Wrap the XA data source in a JTA-enabled `DataSource`.  This class is responsible
-for ensuring that the wrapped XA data source participates in JTA transactions.
-1. Point the `EntityManagerFactory` instance to the `DataSource` instance.
+1. Point the `EntityManagerFactory` instance to the XA `DataSource` instance.
 This makes sure that the database connections participate in JTA transactions.
 1. Declare an XA transaction manager and an XA user transaction.
 1. Wrap the XA transaction manager in a Spring `JtaTransactionManager`.
 1. Use the Spring `JtaTransactionManager`.
-
-In order to see everything in action, install JDK8+ and Maven 3.1+ and run
-`mvn clean test` to run the tests included with the app.
 
 # 2. JTA providers
 
@@ -51,6 +46,8 @@ on Bitronix's [Github repository](https://github.com/bitronix/btm).
 
 *JBoss Transaction Server (JBossTS)* was an open-source JTA transaction manager that
 used to ship as part of the [JBoss J2EE Application Server](http://jbossas.jboss.org).
+Run the bundled integration tests as
+`mvn clean test -D"spring.profiles.active=jbossts"` to see JBossTS in action.
 
 The JBossTS version used for this application is available under the
 GNU Lesser General Public License v2.1.
