@@ -187,7 +187,7 @@
     <junit.version>4.12</junit.version>
     <logback.version>1.1.7</logback.version>
     <postgresql.version>9.4-1201-jdbc41</postgresql.version>
-    <spring.version>4.3.3.RELEASE</spring.version>
+    <spring.version>4.3.20.RELEASE</spring.version>
     <spring.data.jpa.version>1.10.3.RELEASE</spring.data.jpa.version>
   </properties>
 </project>
